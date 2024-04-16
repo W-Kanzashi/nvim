@@ -18,6 +18,13 @@ return {
       window = {
         width = 25,
       },
+      filesystem = {
+        filtered_items = {
+          always_show = {
+            '_components',
+          },
+        },
+      },
     }
   end,
 }
