@@ -8,6 +8,7 @@ return {
     { '<leader>br', '<Cmd>BufferLineCloseRight<CR>', desc = 'Delete Buffers to the Right' },
     { '<leader>bl', '<Cmd>BufferLineCloseLeft<CR>', desc = 'Delete Buffers to the Left' },
     { '<tab>', '<cmd>BufferLineCycleNext<cr>', desc = 'Next Buffer' },
+    { '<S-tab>', '<cmd>BufferLineCyclePrev<cr>', desc = 'Prev Buffer' },
     { '[b', '<cmd>BufferLineCyclePrev<cr>', desc = 'Prev Buffer' },
     { ']b', '<cmd>BufferLineCycleNext<cr>', desc = 'Next Buffer' },
   },

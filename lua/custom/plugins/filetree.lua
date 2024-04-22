@@ -22,6 +22,7 @@ return {
         filtered_items = {
           always_show = {
             '_components',
+            '.env',
           },
         },
       },
