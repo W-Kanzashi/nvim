@@ -16,7 +16,7 @@ return {
       enable_git_status = true,
       enable_diagnostics = true,
       window = {
-        width = 25,
+        width = 40,
       },
       filesystem = {
         filtered_items = {
