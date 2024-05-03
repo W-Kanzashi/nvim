@@ -481,6 +481,7 @@ require('lazy').setup({
         tailwindcss = {
           filetypes_exclude = { 'markdown' },
         },
+        markdown_oxide = {},
 
         lua_ls = {
           -- cmd = {...},
