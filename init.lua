@@ -12,6 +12,16 @@ vim.g.have_nerd_font = true
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
+-- Prevent delete commands to override previous yank
+vim.keymap.set('n', '<leader>d', '"_dd')
+vim.keymap.set('v', '<leader>d', '"_dd')
+vim.keymap.set('x', 'p', '"_dP')
+
+-- Replace all instances of a word with another word
+vim.keymap.set('n', '<leader>m', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+
+vim.opt.termguicolors = true
+
 -- Make line numbers default
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
@@ -43,7 +53,7 @@ vim.opt.smartcase = true
 vim.opt.signcolumn = 'yes'
 
 -- Decrease update time
-vim.opt.updatetime = 250
+vim.opt.updatetime = 50
 
 -- Decrease mapped sequence wait time
 -- Displays which-key popup sooner
@@ -78,7 +88,7 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
-vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
+vim.keymap.set('n', '<leader>n', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
@@ -107,6 +117,10 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- Fast move up and down
 vim.keymap.set('n', '<C-e>', 'Hzz', { desc = 'Half page up and center' })
 vim.keymap.set('n', '<C-d>', 'Lzz', { desc = 'Half page down and center' })
+
+-- Fast move up and down in visual mode
+vim.keymap.set('v', '<C-e>', 'Hzz', { desc = 'Half page up and center' })
+vim.keymap.set('v', '<C-d>', 'Lzz', { desc = 'Half page down and center' })
 
 -- Line handle
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move line down' })
@@ -205,12 +219,12 @@ require('lazy').setup({
       require('which-key').setup()
 
       -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+      require('which-key').add {
+        { '<leader>c', name = '[C]ode', _ = 'which_key_ignore' },
+        { '<leader>d', name = '[D]ocument', _ = 'which_key_ignore' },
+        { '<leader>r', name = '[R]ename', _ = 'which_key_ignore' },
+        { '<leader>s', name = '[S]earch', _ = 'which_key_ignore' },
+        { '<leader>w', name = '[W]orkspace', _ = 'which_key_ignore' },
       }
     end,
   },
@@ -474,11 +488,45 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        tsserver = {},
-        --
+        tsserver = {
+          enabled = false,
+        },
+        vtsls = {
+          settings = {
+            complete_function_calls = true,
+            vtsls = {
+              enableMoveToFileCodeAction = true,
+              autoUseWorkspaceTsdk = true,
+              experimental = {
+                completion = {
+                  enableServerSideFuzzyMatch = true,
+                },
+              },
+            },
+            typescript = {
+              updateImportsOnFileMove = { enabled = 'always' },
+              suggest = {
+                completeFunctionCalls = true,
+              },
+              inlayHints = {
+                enumMemberValues = { enabled = true },
+                functionLikeReturnTypes = { enabled = true },
+                parameterNames = { enabled = 'literals' },
+                parameterTypes = { enabled = true },
+                propertyDeclarationTypes = { enabled = true },
+                variableTypes = { enabled = false },
+              },
+            },
+          },
+          setup = {
+            tsserver = function()
+              return true
+            end,
+          },
+        },
         html = {},
         marksman = {},
-        intelephense = {},
+        -- intelephense = {},
         eslint = {
           settings = {
             workingDirectories = { mode = 'auto' },
@@ -573,6 +621,8 @@ require('lazy').setup({
         typescript = { { 'prettierd' } },
         php = { { 'prettierd' } },
         html = { { 'prettierd' } },
+        markdown = { { 'prettierd' }, 'markdownlint', 'markdown-toc' },
+        ['markdown.mdx'] = { { 'prettierd' }, 'markdownlint', 'markdown-toc' },
       },
     },
   },
@@ -721,7 +771,7 @@ require('lazy').setup({
       --  - va)  - [V]isually select [A]round [)]paren
       --  - yinq - [Y]ank [I]nside [N]ext [']quote
       --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
+      -- require('mini.ai').setup { n_lines = 500 }
 
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
@@ -808,7 +858,7 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
